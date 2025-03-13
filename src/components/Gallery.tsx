@@ -100,16 +100,10 @@ export default function Gallery() {
         }
       };
 
-      // Preload current and adjacent images
-      const current = selectedProject.images[currentImageIndex];
-      const next = selectedProject.images[(currentImageIndex + 1) % selectedProject.images.length];
-      const prev = selectedProject.images[(currentImageIndex - 1 + selectedProject.images.length) % selectedProject.images.length];
-
-      preloadImage(current);
-      preloadImage(next);
-      preloadImage(prev);
+      // Preload all images for the current project
+      selectedProject.images.forEach(preloadImage);
     }
-  }, [selectedProject, currentImageIndex, loadedImages]);
+  }, [selectedProject, loadedImages]);
 
   const nextImage = () => {
     if (selectedProject) {
@@ -122,6 +116,24 @@ export default function Gallery() {
       setCurrentImageIndex((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length);
     }
   };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedProject) return;
+      
+      if (e.key === 'ArrowRight') {
+        nextImage();
+      } else if (e.key === 'ArrowLeft') {
+        previousImage();
+      } else if (e.key === 'Escape') {
+        setSelectedProject(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedProject]);
 
   return (
     <section className="section-padding bg-gray-100" id="gallery">
@@ -203,13 +215,13 @@ export default function Gallery() {
             {/* Navigation Arrows */}
             <button
               onClick={previousImage}
-              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10"
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 p-2 rounded-full"
             >
               <ChevronLeft size={32} />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10"
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 p-2 rounded-full"
             >
               <ChevronRight size={32} />
             </button>
