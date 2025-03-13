@@ -71,7 +71,7 @@ const projects = [
       '/art13.png',
       '/art14.png',
       '/art15.png',
-      '/art16.png'
+      '/art16.png',
     ]
   }
 ];
