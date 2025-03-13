@@ -23,6 +23,11 @@ export default function Navbar() {
     setIsOpen(false);
   };
 
+  // Toggle menu with touch event handling
+  const toggleMenu = () => {
+    setIsOpen(prev => !prev);
+  };
+
   const menuItems = [
     { href: '#home', label: 'Home' },
     { href: '#about', label: 'About' },
@@ -71,8 +76,8 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-400 hover:text-white p-2 rounded-md hover:bg-steel-900/50 transition-colors focus:outline-none focus:ring-2 focus:ring-steel-500"
+              onClick={toggleMenu}
+              className="text-gray-400 hover:text-white p-3 rounded-md hover:bg-steel-900/50 transition-colors focus:outline-none focus:ring-2 focus:ring-steel-500 active:bg-steel-900/70"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -95,7 +100,7 @@ export default function Navbar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors"
+                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors active:bg-steel-900/70"
                   onClick={handleLinkClick}
                 >
                   {item.label}
