@@ -87,40 +87,28 @@ export default function Gallery() {
     images: string[];
   }>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-
-  // Preload images for the current project
-  useEffect(() => {
-    if (selectedProject) {
-      const preloadImage = (src: string) => {
-        if (!loadedImages.has(src)) {
-          const img = new Image();
-          img.src = src;
-          setLoadedImages(prev => new Set([...prev, src]));
-        }
-      };
-
-      // Preload all images for the current project
-      selectedProject.images.forEach(preloadImage);
-    }
-  }, [selectedProject, loadedImages]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const nextImage = () => {
-    if (selectedProject) {
+    if (selectedProject && !isLoading) {
+      setIsLoading(true);
       setCurrentImageIndex((prev) => (prev + 1) % selectedProject.images.length);
+      setTimeout(() => setIsLoading(false), 300);
     }
   };
 
   const previousImage = () => {
-    if (selectedProject) {
+    if (selectedProject && !isLoading) {
+      setIsLoading(true);
       setCurrentImageIndex((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length);
+      setTimeout(() => setIsLoading(false), 300);
     }
   };
 
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!selectedProject) return;
+      if (!selectedProject || isLoading) return;
       
       if (e.key === 'ArrowRight') {
         nextImage();
@@ -133,7 +121,7 @@ export default function Gallery() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedProject]);
+  }, [selectedProject, isLoading]);
 
   return (
     <section className="section-padding bg-gray-100" id="gallery">
@@ -207,7 +195,7 @@ export default function Gallery() {
           >
             <button
               onClick={() => setSelectedProject(null)}
-              className="absolute top-4 right-4 text-white z-10"
+              className="absolute top-4 right-4 text-white z-10 p-2 hover:bg-white/10 rounded-full"
             >
               <X size={24} />
             </button>
@@ -215,13 +203,15 @@ export default function Gallery() {
             {/* Navigation Arrows */}
             <button
               onClick={previousImage}
-              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 p-2 rounded-full"
+              disabled={isLoading}
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 p-2 rounded-full disabled:opacity-50"
             >
               <ChevronLeft size={32} />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 p-2 rounded-full"
+              disabled={isLoading}
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 p-2 rounded-full disabled:opacity-50"
             >
               <ChevronRight size={32} />
             </button>
@@ -237,6 +227,7 @@ export default function Gallery() {
                   alt={`${selectedProject.title} ${currentImageIndex + 1}`}
                   className="w-full h-full object-contain"
                   loading="eager"
+                  onLoad={() => setIsLoading(false)}
                 />
               </div>
             </div>
