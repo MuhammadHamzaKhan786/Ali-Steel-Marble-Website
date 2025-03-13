@@ -181,20 +181,20 @@ export default function Gallery() {
             {/* Navigation Arrows */}
             <button
               onClick={previousImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10"
             >
-              <ChevronLeft size={40} />
+              <ChevronLeft size={32} />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10"
             >
-              <ChevronRight size={40} />
+              <ChevronRight size={32} />
             </button>
 
             {/* Main Image */}
             <div className="max-w-4xl w-full">
-              <h3 className="text-2xl font-bold text-white mb-4 text-center">
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-4 text-center">
                 {selectedProject.title} - Image {currentImageIndex + 1} of {selectedProject.images.length}
               </h3>
               <div className="relative aspect-video rounded-lg overflow-hidden">
