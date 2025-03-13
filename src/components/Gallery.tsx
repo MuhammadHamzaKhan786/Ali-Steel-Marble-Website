@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const projects = [
@@ -49,7 +49,6 @@ const projects = [
       '/marble10.png',
       '/marble11.png',
       '/marble12.png'
-      
     ]
   },
   {
@@ -73,8 +72,6 @@ const projects = [
       '/art3.png',
       '/art2.png',
       '/art1.png',
-      
-
     ]
   }
 ];
@@ -90,6 +87,29 @@ export default function Gallery() {
     images: string[];
   }>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+
+  // Preload images for the current project
+  useEffect(() => {
+    if (selectedProject) {
+      const preloadImage = (src: string) => {
+        if (!loadedImages.has(src)) {
+          const img = new Image();
+          img.src = src;
+          setLoadedImages(prev => new Set([...prev, src]));
+        }
+      };
+
+      // Preload current and adjacent images
+      const current = selectedProject.images[currentImageIndex];
+      const next = selectedProject.images[(currentImageIndex + 1) % selectedProject.images.length];
+      const prev = selectedProject.images[(currentImageIndex - 1 + selectedProject.images.length) % selectedProject.images.length];
+
+      preloadImage(current);
+      preloadImage(next);
+      preloadImage(prev);
+    }
+  }, [selectedProject, currentImageIndex, loadedImages]);
 
   const nextImage = () => {
     if (selectedProject) {
@@ -129,6 +149,7 @@ export default function Gallery() {
                   src={project.images[0]}
                   alt={project.title}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-6 transition-opacity opacity-0 hover:opacity-100">
                   <div className="text-white">
@@ -138,16 +159,17 @@ export default function Gallery() {
                 </div>
               </div>
               <div className="p-6">
-                <div className="flex gap-2 mb-4">
-                  {project.images.slice(1).map((image, index) => (
+                <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+                  {project.images.slice(1, 4).map((image, index) => (
                     <div
                       key={index}
-                      className="w-16 h-16 rounded-lg overflow-hidden"
+                      className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0"
                     >
                       <img
                         src={image}
                         alt={`${project.title} ${index + 2}`}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     </div>
                   ))}
@@ -202,6 +224,7 @@ export default function Gallery() {
                   src={selectedProject.images[currentImageIndex]}
                   alt={`${selectedProject.title} ${currentImageIndex + 1}`}
                   className="w-full h-full object-contain"
+                  loading="eager"
                 />
               </div>
             </div>
