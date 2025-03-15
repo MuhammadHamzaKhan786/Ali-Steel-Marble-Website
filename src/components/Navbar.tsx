@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 'use client';
 
-=======
->>>>>>> d4a276268a196af15471bb689e732aa4831ce35f
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,7 +21,6 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-<<<<<<< HEAD
   // Handle smooth scroll
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -39,16 +35,6 @@ export default function Navbar() {
       // Update URL without page reload
       window.history.pushState({}, '', href);
     }
-=======
-  // Close menu when clicking a link
-  const handleLinkClick = () => {
-    setIsOpen(false);
-  };
-
-  // Toggle menu with touch event handling
-  const toggleMenu = () => {
-    setIsOpen(prev => !prev);
->>>>>>> d4a276268a196af15471bb689e732aa4831ce35f
   };
 
   const menuItems = [
@@ -102,11 +88,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
-<<<<<<< HEAD
               onClick={() => setIsOpen(!isOpen)}
-=======
-              onClick={toggleMenu}
->>>>>>> d4a276268a196af15471bb689e732aa4831ce35f
               className="text-gray-400 hover:text-white p-3 rounded-md hover:bg-steel-900/50 transition-colors focus:outline-none focus:ring-2 focus:ring-steel-500 active:bg-steel-900/70"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
@@ -130,13 +112,8 @@ export default function Navbar() {
                 <a
                   key={item.href}
                   href={item.href}
-<<<<<<< HEAD
                   onClick={(e) => handleScroll(e, item.href)}
                   className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors active:bg-steel-900/70"
-=======
-                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors active:bg-steel-900/70"
-                  onClick={handleLinkClick}
->>>>>>> d4a276268a196af15471bb689e732aa4831ce35f
                 >
                   {item.label}
                 </a>
