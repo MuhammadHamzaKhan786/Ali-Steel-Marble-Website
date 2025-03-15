@@ -1,14 +1,16 @@
-import Navbar from '@/components/Navbar'
-import Hero from '@/components/Hero'
-import About from '@/components/About'
-import Services from '@/components/Services'
-import Gallery from '@/components/Gallery'
-import ContactForm from '@/components/ContactForm'
-import Footer from '@/components/Footer'
+'use client';
+
+import Navbar from '../components/Navbar'
+import Hero from '../components/Hero'
+import About from '../components/About'
+import Services from '../components/Services'
+import Gallery from '../components/Gallery'
+import ContactForm from '../components/ContactForm'
+import Footer from '../components/Footer'
 
 export default function Home() {
   return (
-    <main>
+    <div className="min-h-screen bg-black text-white">
       <Navbar />
       <Hero />
       <About />
@@ -17,6 +19,6 @@ export default function Home() {
       <ContactForm />
       <div className="h-px bg-gray-800"></div>
       <Footer />
-    </main>
+    </div>
   )
 } 

@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Ali Steel - Premium Steel & Marble Solutions',
-  description: 'Providing premium steel and marble solutions since 1995. Quality, reliability, and innovation are at the core of everything we do.',
+  description: 'High-quality steel and marble solutions for your construction needs. We specialize in steel railings, gates, and marble installations.',
 }
 
 export default function RootLayout({
@@ -15,10 +15,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} min-h-screen bg-black text-white`}>
-        {children}
-      </body>
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
     </html>
   )
 } 
