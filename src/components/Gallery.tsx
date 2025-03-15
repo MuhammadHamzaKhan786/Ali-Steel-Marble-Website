@@ -90,6 +90,7 @@ export default function Gallery() {
   }>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+<<<<<<< HEAD
   const [preloadedImages, setPreloadedImages] = useState<Set<string>>(new Set());
 
   // Preload images for the current project
@@ -115,11 +116,14 @@ export default function Gallery() {
       preloadImage(next2);
     }
   }, [selectedProject, currentImageIndex, preloadedImages]);
+=======
+>>>>>>> d4a276268a196af15471bb689e732aa4831ce35f
 
   const nextImage = () => {
     if (selectedProject && !isLoading) {
       setIsLoading(true);
       setCurrentImageIndex((prev) => (prev + 1) % selectedProject.images.length);
+      setTimeout(() => setIsLoading(false), 300);
     }
   };
 
@@ -127,6 +131,7 @@ export default function Gallery() {
     if (selectedProject && !isLoading) {
       setIsLoading(true);
       setCurrentImageIndex((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length);
+      setTimeout(() => setIsLoading(false), 300);
     }
   };
 
@@ -175,7 +180,10 @@ export default function Gallery() {
                   alt={project.title}
                   className="w-full h-full object-cover"
                   loading="lazy"
+<<<<<<< HEAD
                   decoding="async"
+=======
+>>>>>>> d4a276268a196af15471bb689e732aa4831ce35f
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-6 transition-opacity opacity-0 hover:opacity-100">
                   <div className="text-white">
@@ -196,7 +204,10 @@ export default function Gallery() {
                         alt={`${project.title} ${index + 2}`}
                         className="w-full h-full object-cover"
                         loading="lazy"
+<<<<<<< HEAD
                         decoding="async"
+=======
+>>>>>>> d4a276268a196af15471bb689e732aa4831ce35f
                       />
                     </div>
                   ))}
@@ -254,7 +265,10 @@ export default function Gallery() {
                   alt={`${selectedProject.title} ${currentImageIndex + 1}`}
                   className="w-full h-full object-contain"
                   loading="eager"
+<<<<<<< HEAD
                   decoding="async"
+=======
+>>>>>>> d4a276268a196af15471bb689e732aa4831ce35f
                   onLoad={() => setIsLoading(false)}
                 />
               </div>
