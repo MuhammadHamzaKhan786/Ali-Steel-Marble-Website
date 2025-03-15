@@ -21,24 +21,27 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle smooth scroll
+  // Handle smooth scroll with delay
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
 
     const target = document.querySelector(href);
     if (target) {
-      setIsOpen(false); // Close menu after scrolling
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-      // Update URL without page reload
-      window.history.pushState({}, '', href);
+      // Add a small delay before closing the menu and scrolling
+      setTimeout(() => {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+        setIsOpen(false); // Close menu after scrolling
+        // Update URL without page reload
+        window.history.pushState({}, '', href);
+      }, 100);
     }
   };
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    setIsOpen(prev => !prev);
   };
 
   const menuItems = [
@@ -95,6 +98,7 @@ export default function Navbar() {
               onClick={toggleMenu}
               className="text-gray-400 hover:text-white p-3 rounded-md hover:bg-steel-900/50 transition-colors focus:outline-none focus:ring-2 focus:ring-steel-500 active:bg-steel-900/70"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              type="button"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -113,14 +117,13 @@ export default function Navbar() {
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {menuItems.map((item) => (
-                <a
+                <button
                   key={item.href}
-                  href={item.href}
-                  onClick={(e) => handleScroll(e, item.href)}
-                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors active:bg-steel-900/70"
+                  onClick={(e: any) => handleScroll(e, item.href)}
+                  className="w-full text-left text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors active:bg-steel-900/70"
                 >
                   {item.label}
-                </a>
+                </button>
               ))}
             </div>
           </motion.div>
