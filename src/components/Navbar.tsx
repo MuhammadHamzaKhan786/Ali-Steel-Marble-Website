@@ -1,24 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const menu = document.getElementById('mobile-menu');
-      const button = document.getElementById('menu-button');
-
       if (
-        menu &&
-        !menu.contains(event.target as Node) &&
-        button &&
-        !button.contains(event.target as Node)
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
       }
@@ -33,22 +32,24 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  // Ensure smooth scrolling works correctly
+  // Smooth Scroll & Close Menu
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setIsOpen(false); // Close menu immediately
+    setIsOpen(false); // Close menu before scrolling
 
-    const target = document.querySelector(href);
-    if (target) {
-      const offset = 80; // Adjust based on navbar height
-      const elementPosition = target.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: elementPosition - offset,
-        behavior: 'smooth',
-      });
+    setTimeout(() => {
+      const target = document.querySelector(href);
+      if (target) {
+        const offset = 80; // Adjust based on navbar height
+        const elementPosition = target.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: elementPosition - offset,
+          behavior: 'smooth',
+        });
 
-      window.history.pushState({}, '', href);
-    }
+        window.history.pushState({}, '', href);
+      }
+    }, 100);
   };
 
   const toggleMenu = () => {
@@ -107,7 +108,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
-              id="menu-button"
+              ref={buttonRef}
               onClick={toggleMenu}
               className="text-gray-400 hover:text-white p-3 rounded-md hover:bg-steel-900/50 transition-colors focus:outline-none focus:ring-2 focus:ring-steel-500 active:bg-steel-900/70"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
@@ -123,7 +124,7 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            id="mobile-menu"
+            ref={menuRef}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
