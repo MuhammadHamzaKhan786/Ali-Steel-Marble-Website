@@ -14,6 +14,7 @@ function App() {
       <Services />
       <Gallery />
       <ContactForm />
+      <div className="h-px bg-gray-800"></div>
       <Footer />
     </div>
   );

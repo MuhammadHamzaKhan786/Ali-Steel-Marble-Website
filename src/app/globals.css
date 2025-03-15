@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+  
+  .heading {
+    @apply text-3xl md:text-4xl font-bold mb-6;
+  }
+  
+  .subheading {
+    @apply text-lg md:text-xl mb-12;
+  }
+} 

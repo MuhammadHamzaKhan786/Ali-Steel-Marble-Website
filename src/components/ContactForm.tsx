@@ -1,3 +1,5 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
@@ -21,19 +23,19 @@ export default function ContactForm() {
     {
       icon: Phone,
       title: 'Call Us',
-      content: '+92 (0347) 120-2545',
-      action: 'https://wa.me/15551234567'
+      content: '+92 347 120-2545',
+      action: 'https://wa.me/923471202545'
     },
     {
       icon: Mail,
       title: 'Email',
-      content: 'contact@alisteel.com',
-      action: 'mailto:contact@alisteel.com'
+      content: 'info@alisteel.com',
+      action: 'mailto:info@alisteel.com'
     },
     {
       icon: MapPin,
       title: 'Visit Us',
-      content: 'Show Room: Shop No: R-541/16 Water Pump Glass Market F.B Area Karachi',
+      content: 'Main Branch: Shop No: 264/265,B Road, Liaquatabad, Karachi, Pakistan',
       action: 'https://maps.google.com'
     }
   ];

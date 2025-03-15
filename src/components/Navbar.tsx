@@ -1,9 +1,41 @@
-import { useState } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const nav = document.querySelector('nav');
+      if (nav && !nav.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle smooth scroll
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+      // Update URL without page reload
+      window.history.pushState({}, '', href);
+    }
+  };
 
   const menuItems = [
     { href: '#home', label: 'Home' },
@@ -23,13 +55,15 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <img 
-              src="/logo.png" 
-              alt="Ali Steel" 
-              className="h-16 w-16 object-contain rounded-full shadow-lg shadow-steel-600/20"
-              style={{ imageRendering: 'crisp-edges' }}
-            />
-            <span className="ml-3 text-2xl font-bold text-white">Ali Steel</span>
+            <Link href="/" className="flex items-center">
+              <img 
+                src="/logo.png" 
+                alt="Ali Steel" 
+                className="h-16 w-16 object-contain rounded-full shadow-lg shadow-steel-600/20"
+                style={{ imageRendering: 'crisp-edges' }}
+              />
+              <span className="ml-3 text-2xl font-bold text-white">Ali Steel</span>
+            </Link>
           </motion.div>
           
           {/* Desktop Menu */}
@@ -39,6 +73,7 @@ export default function Navbar() {
                 <motion.a
                   key={item.href}
                   href={item.href}
+                  onClick={(e) => handleScroll(e, item.href)}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
@@ -54,7 +89,8 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-400 hover:text-white p-2 rounded-md hover:bg-steel-900/50 transition-colors"
+              className="text-gray-400 hover:text-white p-3 rounded-md hover:bg-steel-900/50 transition-colors focus:outline-none focus:ring-2 focus:ring-steel-500 active:bg-steel-900/70"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -69,15 +105,15 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-black/95"
+            className="md:hidden bg-black/95 border-t border-gray-800"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {menuItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
-                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors"
-                  onClick={() => setIsOpen(false)}
+                  onClick={(e) => handleScroll(e, item.href)}
+                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors active:bg-steel-900/70"
                 >
                   {item.label}
                 </a>

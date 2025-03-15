@@ -1,6 +1,8 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const projects = [
@@ -49,7 +51,6 @@ const projects = [
       '/marble10.png',
       '/marble11.png',
       '/marble12.png'
-      
     ]
   },
   {
@@ -57,24 +58,22 @@ const projects = [
     title: 'Steel Arts Interiors',
     category: 'Arts Interiors',
     images: [
-      '/art16.png',
-      '/art15.png',
-      '/art14.png',
-      '/art13.png',
-      '/art12.png',
-      '/art11.png',
-      '/art10.png',
-      '/art9.png',
-      '/art8.png',
-      '/art7.png',
-      '/art6.png',
-      '/art5.png',
-      '/art.png',
-      '/art3.png',
-      '/art2.png',
       '/art1.png',
-      
-
+      '/art2.png',
+      '/art3.png',
+      '/art4.png',
+      '/art5.png',
+      '/art6.png',
+      '/art7.png',
+      '/art8.png',
+      '/art9.png',
+      '/art10.png',
+      '/art11.png',
+      '/art12.png',
+      '/art13.png',
+      '/art14.png',
+      '/art15.png',
+      '/art16.png',
     ]
   }
 ];
@@ -90,18 +89,64 @@ export default function Gallery() {
     images: string[];
   }>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [preloadedImages, setPreloadedImages] = useState<Set<string>>(new Set());
+
+  // Preload images for the current project
+  useEffect(() => {
+    if (selectedProject) {
+      const preloadImage = (src: string) => {
+        if (!preloadedImages.has(src)) {
+          const img = new Image();
+          img.src = src;
+          img.onload = () => {
+            setPreloadedImages(prev => new Set([...prev, src]));
+          };
+        }
+      };
+
+      // Preload current and next 2 images
+      const current = selectedProject.images[currentImageIndex];
+      const next1 = selectedProject.images[(currentImageIndex + 1) % selectedProject.images.length];
+      const next2 = selectedProject.images[(currentImageIndex + 2) % selectedProject.images.length];
+
+      preloadImage(current);
+      preloadImage(next1);
+      preloadImage(next2);
+    }
+  }, [selectedProject, currentImageIndex, preloadedImages]);
 
   const nextImage = () => {
-    if (selectedProject) {
+    if (selectedProject && !isLoading) {
+      setIsLoading(true);
       setCurrentImageIndex((prev) => (prev + 1) % selectedProject.images.length);
     }
   };
 
   const previousImage = () => {
-    if (selectedProject) {
+    if (selectedProject && !isLoading) {
+      setIsLoading(true);
       setCurrentImageIndex((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length);
     }
   };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedProject || isLoading) return;
+      
+      if (e.key === 'ArrowRight') {
+        nextImage();
+      } else if (e.key === 'ArrowLeft') {
+        previousImage();
+      } else if (e.key === 'Escape') {
+        setSelectedProject(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedProject, isLoading]);
 
   return (
     <section className="section-padding bg-gray-100" id="gallery">
@@ -129,6 +174,8 @@ export default function Gallery() {
                   src={project.images[0]}
                   alt={project.title}
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-6 transition-opacity opacity-0 hover:opacity-100">
                   <div className="text-white">
@@ -138,16 +185,18 @@ export default function Gallery() {
                 </div>
               </div>
               <div className="p-6">
-                <div className="flex gap-2 mb-4">
-                  {project.images.slice(1).map((image, index) => (
+                <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+                  {project.images.slice(1, 4).map((image, index) => (
                     <div
                       key={index}
-                      className="w-16 h-16 rounded-lg overflow-hidden"
+                      className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0"
                     >
                       <img
                         src={image}
                         alt={`${project.title} ${index + 2}`}
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   ))}
@@ -173,7 +222,7 @@ export default function Gallery() {
           >
             <button
               onClick={() => setSelectedProject(null)}
-              className="absolute top-4 right-4 text-white z-10"
+              className="absolute top-4 right-4 text-white z-10 p-2 hover:bg-white/10 rounded-full"
             >
               <X size={24} />
             </button>
@@ -181,20 +230,22 @@ export default function Gallery() {
             {/* Navigation Arrows */}
             <button
               onClick={previousImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+              disabled={isLoading}
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 p-2 rounded-full disabled:opacity-50"
             >
-              <ChevronLeft size={40} />
+              <ChevronLeft size={32} />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+              disabled={isLoading}
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 p-2 rounded-full disabled:opacity-50"
             >
-              <ChevronRight size={40} />
+              <ChevronRight size={32} />
             </button>
 
             {/* Main Image */}
             <div className="max-w-4xl w-full">
-              <h3 className="text-2xl font-bold text-white mb-4 text-center">
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-4 text-center">
                 {selectedProject.title} - Image {currentImageIndex + 1} of {selectedProject.images.length}
               </h3>
               <div className="relative aspect-video rounded-lg overflow-hidden">
@@ -202,6 +253,9 @@ export default function Gallery() {
                   src={selectedProject.images[currentImageIndex]}
                   alt={`${selectedProject.title} ${currentImageIndex + 1}`}
                   className="w-full h-full object-contain"
+                  loading="eager"
+                  decoding="async"
+                  onLoad={() => setIsLoading(false)}
                 />
               </div>
             </div>

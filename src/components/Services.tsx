@@ -1,6 +1,8 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Hammer, Columns, Heater as Gate, Stars as Stairs } from 'lucide-react';
+import { Hammer, Columns, DoorClosed, Stars as Stairs } from 'lucide-react';
 
 const services = [
   {
@@ -14,7 +16,7 @@ const services = [
     description: 'Expert marble fitting and installation for floors, walls, and countertops.'
   },
   {
-    icon: Gate,
+    icon: DoorClosed,
     title: 'Steel Gates & Railings',
     description: 'Elegant and durable steel gates and railings for both residential and commercial properties.'
   },

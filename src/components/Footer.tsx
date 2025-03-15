@@ -1,3 +1,5 @@
+'use client';
+
 import { Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react';
 
 const Footer = () => {
@@ -61,8 +63,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Phone size={20} className="mr-2 flex-shrink-0 text-gray-400" />
-                <a href="tel:+1234567890" className="text-gray-400 hover:text-white transition-colors">
-                +92 (0300) 273-6031
+                <a href="tel:+923002736031" className="text-gray-400 hover:text-white transition-colors">
+                +92 300-273-6031
                 </a>
               </li>
               <li className="flex items-center">
@@ -77,9 +79,12 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm mb-4 md:mb-0">
+            <p className="text-gray-400 text-sm">
               © {currentYear} Ali Steel. All rights reserved.
             </p>
+            <div className="text-gray-400 text-sm my-4 md:my-0">
+              Developed By Muhammad Hamza Khan😎
+            </div>
             <div className="flex space-x-6">
               <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
               <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
