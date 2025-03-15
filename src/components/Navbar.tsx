@@ -24,10 +24,10 @@ export default function Navbar() {
   // Handle smooth scroll
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setIsOpen(false);
 
     const target = document.querySelector(href);
     if (target) {
+      setIsOpen(false); // Close menu after scrolling
       target.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
@@ -35,6 +35,10 @@ export default function Navbar() {
       // Update URL without page reload
       window.history.pushState({}, '', href);
     }
+  };
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
   };
 
   const menuItems = [
@@ -88,7 +92,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={toggleMenu}
               className="text-gray-400 hover:text-white p-3 rounded-md hover:bg-steel-900/50 transition-colors focus:outline-none focus:ring-2 focus:ring-steel-500 active:bg-steel-900/70"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
