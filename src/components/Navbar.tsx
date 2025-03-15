@@ -11,28 +11,42 @@ export default function Navbar() {
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const nav = document.querySelector('nav');
-      if (nav && !nav.contains(event.target as Node)) {
+      const menu = document.getElementById('mobile-menu');
+      const button = document.getElementById('menu-button');
+
+      if (
+        menu &&
+        !menu.contains(event.target as Node) &&
+        button &&
+        !button.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
 
-  // Handle smooth scroll
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
+
+  // Ensure smooth scrolling works correctly
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+    setIsOpen(false); // Close menu immediately
 
     const target = document.querySelector(href);
     if (target) {
-      target.scrollIntoView({
+      const offset = 80; // Adjust based on navbar height
+      const elementPosition = target.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - offset,
         behavior: 'smooth',
-        block: 'start',
       });
-      setIsOpen(false); // Close menu after scrolling
-      // Update URL without page reload
+
       window.history.pushState({}, '', href);
     }
   };
@@ -53,6 +67,7 @@ export default function Navbar() {
     <nav className="fixed w-full z-50 bg-black/80 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
+          {/* Logo */}
           <motion.div
             className="flex-shrink-0 flex items-center"
             initial={{ opacity: 0, x: -20 }}
@@ -92,6 +107,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
+              id="menu-button"
               onClick={toggleMenu}
               className="text-gray-400 hover:text-white p-3 rounded-md hover:bg-steel-900/50 transition-colors focus:outline-none focus:ring-2 focus:ring-steel-500 active:bg-steel-900/70"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
@@ -107,6 +123,7 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -118,7 +135,7 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   onClick={(e) => handleScroll(e, item.href)}
-                  className="w-full text-left text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors active:bg-steel-900/70"
+                  className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium hover:bg-steel-900/50 transition-colors active:bg-steel-900/70"
                 >
                   {item.label}
                 </a>
