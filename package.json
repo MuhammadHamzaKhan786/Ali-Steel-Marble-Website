@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@eslint/config-array": "^0.19.2",
+    "@eslint/object-schema": "^2.1.6",
     "framer-motion": "^10.18.0",
+    "glob": "^11.0.1",
     "lucide-react": "^0.300.0",
     "next": "^15.2.2",
     "react": "18.2.0",
