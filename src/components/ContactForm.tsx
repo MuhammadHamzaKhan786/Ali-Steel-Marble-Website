@@ -49,8 +49,8 @@ export default function ContactForm() {
     {
       icon: Phone,
       title: 'Call Us',
-      content: '+92 300-273-6031',
-      action: 'tel:+923002736031'
+      content: '+92 312-873-0933',
+      action: 'tel:+923128730933'
     },
     {
       icon: Mail,
