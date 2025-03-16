@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import { useState } from 'react';
 
 type FormData = {
   name: string;
@@ -12,19 +13,44 @@ type FormData = {
 };
 
 export default function ContactForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    // Handle form submission
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      // Create the email content
+      const emailContent = `
+        Name: ${data.name}
+        Email: ${data.email}
+        Phone: ${data.phone}
+        Message: ${data.message}
+      `;
+
+      // Open the default email client
+      window.location.href = `mailto:info@alisteel.com?subject=Contact Form Submission from ${data.name}&body=${encodeURIComponent(emailContent)}`;
+
+      // Show success message
+      setSubmitStatus('success');
+      // Reset form
+      reset();
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
     {
       icon: Phone,
       title: 'Call Us',
-      content: '+92 347 120-2545',
-      action: 'https://wa.me/923471202545'
+      content: '+92 300-273-6031',
+      action: 'tel:+923002736031'
     },
     {
       icon: Mail,
@@ -61,7 +87,8 @@ export default function ContactForm() {
                   <label className="block text-sm font-medium text-gray-300">Name</label>
                   <input
                     {...register('name', { required: 'Name is required' })}
-                    className="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white"
+                    className="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white px-4 py-2"
+                    placeholder="Your name"
                   />
                   {errors.name && (
                     <span className="text-red-500 text-sm">{errors.name.message}</span>
@@ -72,8 +99,15 @@ export default function ContactForm() {
                   <label className="block text-sm font-medium text-gray-300">Email</label>
                   <input
                     type="email"
-                    {...register('email', { required: 'Email is required' })}
-                    className="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white"
+                    {...register('email', { 
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Invalid email address'
+                      }
+                    })}
+                    className="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white px-4 py-2"
+                    placeholder="your.email@example.com"
                   />
                   {errors.email && (
                     <span className="text-red-500 text-sm">{errors.email.message}</span>
@@ -84,8 +118,15 @@ export default function ContactForm() {
                   <label className="block text-sm font-medium text-gray-300">Phone</label>
                   <input
                     type="tel"
-                    {...register('phone', { required: 'Phone is required' })}
-                    className="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white"
+                    {...register('phone', { 
+                      required: 'Phone number is required',
+                      pattern: {
+                        value: /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
+                        message: 'Invalid phone number'
+                      }
+                    })}
+                    className="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white px-4 py-2"
+                    placeholder="+92 300-000-0000"
                   />
                   {errors.phone && (
                     <span className="text-red-500 text-sm">{errors.phone.message}</span>
@@ -97,21 +138,41 @@ export default function ContactForm() {
                   <textarea
                     {...register('message', { required: 'Message is required' })}
                     rows={4}
-                    className="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white"
+                    className="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white px-4 py-2"
+                    placeholder="Your message here..."
                   />
                   {errors.message && (
                     <span className="text-red-500 text-sm">{errors.message.message}</span>
                   )}
                 </div>
 
+                {submitStatus === 'success' && (
+                  <div className="text-green-500 text-sm">
+                    Message sent successfully! We'll get back to you soon.
+                  </div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <div className="text-red-500 text-sm">
+                    Failed to send message. Please try again or contact us directly.
+                  </div>
+                )}
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-steel-600 hover:bg-steel-700 md:py-4 md:text-lg md:px-10"
+                  disabled={isSubmitting}
+                  className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-steel-600 hover:bg-steel-700 disabled:opacity-50 disabled:cursor-not-allowed md:py-4 md:text-lg md:px-10"
                 >
-                  <Send className="w-5 h-5 mr-2" />
-                  Send Message
+                  {isSubmitting ? (
+                    'Sending...'
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5 mr-2" />
+                      Send Message
+                    </>
+                  )}
                 </motion.button>
               </form>
             </div>
