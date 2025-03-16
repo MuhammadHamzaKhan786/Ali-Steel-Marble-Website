@@ -50,7 +50,7 @@ export default function ContactForm() {
       icon: Phone,
       title: 'Call Us',
       content: '+92 312-873-0933',
-      action: 'tel:+923128730933'
+      action: 'https//wa.me/923128730933'
     },
     {
       icon: Mail,
